@@ -1,0 +1,52 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class WeatherAPIExample {
+    public static void main(String[] args) {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+            System.out.print("Enter city name: ");
+            String city = reader.readLine();
+
+            // Replace 'YOUR_API_KEY' with your actual API key
+
+            String apiKey = "YOUR_API_KEY";
+            String apiUrl = "https://api.example.com/weather?city=" + city + "&appid=" + apiKey;
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader apiReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = apiReader.readLine()) != null) {
+                    response.append(line);
+                }
+                apiReader.close();
+
+                String weatherReport = ""; 
+                String windSpeed = ""; 
+                String pressure = ""; 
+
+                System.out.println("Weather Report: " + weatherReport);
+                System.out.println("Wind Speed: " + windSpeed + " m/s");
+                System.out.println("Pressure: " + pressure + " hPa");
+            } else {
+                System.out.println("Error: Unable to fetch weather data. Response code: " + responseCode);
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
